@@ -5,24 +5,40 @@
 
 <body>
 
+
+<div id="app">
+
 <h2>PDF Toolbox</h2>
 
-<p>
-this box lets you select a input doc, hit a button, sends to func to convert to pdf, and render embed frame
-</p>
+	<div id="features">
+		<div class="featureBox" @drop.prevent="dropDoc" @dragenter.prevent @dragover.prevent>
+		<p>
+		Drag an Office doc (DOC, DOCX, PPT, PPTX, XLS, XLSX), TXT, RTF, or Image (BMP, JPEG, GIF, TIFF, PNG) to convert to PDF.
+		</p>
+		<p>{{ convertToPDFStatus }}</p>
+		</div>
 
-<p>
-this box lets you select a pdf, select a format from a drop down, hit the button to send it and then it will stream 
-to a download 
-</p>
+		<div class="featureBox">
+		<p>
+		this box lets you select a pdf, select a format from a drop down, hit the button to send it and then it will stream 
+		to a download 
+		</p>
+		</div>
 
-<p>
-this box just lets you pick a pdf and its rendered in the embed 
-</p>
+		<div class="featureBox">
+		<p>
+		this box just lets you pick a pdf and its rendered in the embed 
+		</p>
+		</div>
+	</div>
 
-<p>
-this is the embed box
-</p>
+	<div id="pdfEmbed">
+	embed will go here
+	</div>
 
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
