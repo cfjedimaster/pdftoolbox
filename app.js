@@ -11,7 +11,7 @@ const app = new Vue({
 		convertToPDFStatus:''
 	},
 	methods: {
-		dropDoc(e) {
+		async dropDoc(e) {
 			let droppedFiles = e.dataTransfer.files;
       		if(!droppedFiles) return;
 
@@ -23,10 +23,30 @@ const app = new Vue({
 			}
 
 			this.convertToPDFStatus = `Beginning conversion of ${file.name} to PDF...`;
-			
+			let fileData = await getFile(file);	
+			let resp = await fetch('/api/convertToPDF', {
+				method:'POST', 
+				body: fileData
+			});
+			let data = await resp.json();
+
+
 		},
 		validForConversion(type) {
 			return VALID_TO_PDF.includes(type);
 		}
 	}
 });
+
+//Modified from: https://tpiros.dev/blog/image-upload-and-metadata-extraction-with-netlify-functions/
+async function getFile(f) {
+
+	return new Promise((resolve, reject) => {
+		let reader = new FileReader();
+		reader.onload = e => {
+			resolve(reader.result);
+		}
+		reader.onerror = reject;
+		reader.readAsDataURL(f);
+	});
+}
