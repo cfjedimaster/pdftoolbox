@@ -17,16 +17,23 @@ const app = new Vue({
 
 			// only care about file1
 			let file = droppedFiles[0];
+			console.log(file);
 			if(!this.validForConversion(file.type)) {
 				console.log(file.type);
 				alert(`Dropped file was not of the correct type.\nFile type was: ${file.type}`);
 			}
 
 			this.convertToPDFStatus = `Beginning conversion of ${file.name} to PDF...`;
-			let fileData = await getFile(file);	
+			let fileData = await getFile(file);
+			let body = {
+				type:file.type,
+				name:file.name,
+				data:fileData
+			};
+
 			let resp = await fetch('/api/convertToPDF', {
 				method:'POST', 
-				body: fileData
+				body: JSON.stringify(body)
 			});
 			let data = await resp.json();
 
