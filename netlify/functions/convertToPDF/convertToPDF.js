@@ -32,14 +32,18 @@ const handler = async (event) => {
 	fs.unlinkSync(input);
 
 	// todo later - stream the shit back to the caller
-	
-    const subject = event.queryStringParameters.name || 'World'
+    let output = `./${nanoid()}.pdf`;
+	await pdf.saveAsFile(output);
+
+	let pdfData = fs.readFileSync(output, 'binary');
+	let pdf64 = Buffer.from(pdfData).toString('base64');
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: `Hello ${subject}` }),
+      body: pdf64,
       // // more keys you can return:
       // headers: { "headerName": "headerValue", ... },
-      // isBase64Encoded: true,
+      isBase64Encoded: true,
     }
   } catch (error) {
     return { statusCode: 500, body: error.toString() }
