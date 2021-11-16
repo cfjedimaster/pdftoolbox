@@ -9,7 +9,7 @@
 
 	<div id="features">
 
-		<h2>PDF Toolbox v1.Infinity</h2>
+		<h2>PDF Toolbox v1.0</h2>
 
 		<div class="featureBox" @drop.prevent="dropDoc" @dragenter.prevent @dragover.prevent>
 		<p>
@@ -37,6 +37,26 @@
 		</p>
 		<p v-html="exportPDFStatus"></p>
 		</div>
+
+		<div class="featureBox" @drop.prevent="dropPDFForEmbed" @dragenter.prevent @dragover.prevent>
+		<p>
+		Drag a PDF here to simply view it in our awesome PDF Embed API.
+		</p>
+		<p>
+		<select v-model="embedMode">
+			<option value="FULL_WINDOW">FULL_WINDOW (really full container)</option>
+			<option value="SIZED_CONTAINER">SIZED_CONTAINER</option>
+			<option value="IN_LINE">IN_LINE</option>
+			<option value="LIGHT_BOX">LIGHT_BOX</option>
+		</select>
+		</p>
+		<p v-html="embedPDFStatus"></p>
+		</div>
+
+		<p>
+		<a href="https://www.raymondcamden.com" target="_new">Created by Ramond Camden</a> / 
+		<a href="https://github.com/cfjedimaster/pdftoolbox" target="_new">Source</a>
+		</p>
 
 	</div>
 

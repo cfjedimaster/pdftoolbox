@@ -17,7 +17,6 @@ const VALID_TO_PDF = [
 	'image/gif',
 	'image/tiff',
 	'image/png'
-
 	];
 
 const app = new Vue({
@@ -25,10 +24,14 @@ const app = new Vue({
 	data: {
 		convertToPDFStatus:'',
 		exportPDFStatus:'',
+		embedPDFStatus:'',
 		pdfAPIReady: false,
 		exportReady:false,
 		pdfFile:null,
-		exportFormat:'DOCX' /* hard coded for now just to lazily set a default */
+		pdfFileEmbed:null,
+		pdfFileEmbedBase64:null,
+		exportFormat:'DOCX' /* hard coded for now just to lazily set a default */,
+		embedMode:'FULL_WINDOW' /* ditto above */
 	},
 	mounted() {
 		/*
@@ -89,6 +92,38 @@ const app = new Vue({
 			// copy so we can use it when the process begins
 			this.pdfFile = file;
 			this.exportReady = true;
+
+		},
+		async dropPDFForEmbed(e) {
+			let droppedFiles = e.dataTransfer.files;
+      		if(!droppedFiles) return;
+
+			this.pdfFileEmbed = null;
+			this.exportPDFStatus = '';
+
+			// only care about file1
+			let file = droppedFiles[0];
+			if(file.type !== 'application/pdf') {
+				this.embedPDFStatus = 'Dropped file was not a PDF. Pick a PDF.';
+				return;
+			}
+
+			// store so we can use it again when switching embed
+			this.pdfFileEmbed = file;
+			// so the method I wrote expects b64, so convert first. I'm not a fan of this
+			let reader = new FileReader();
+			reader.onload = () => {
+				//return reader.result;
+				let result = reader.result;
+				result = result.replace(/data:.*?;base64,/,'');
+				/*
+				I'm going to store the b64 result so we can change embed.
+				Again, this whole area kinda smells to me.
+				*/
+				this.pdfFileEmbedBase64 = result;
+				this.pdfRender(result,this.embedMode);
+			}
+			reader.readAsDataURL(file);
 
 		},
 		async exportPDF() {
@@ -154,8 +189,7 @@ const app = new Vue({
 			window.location = blobUrl;
 
 		},
-		pdfRender(data) {
-			console.log('going to try to render');
+		pdfRender(data,mode = 'FULL_WINDOW') {
 			let pdfView = new AdobeDC.View({
 				clientId: ADOBE_KEY, divId: "pdfEmbed" 
 			});
@@ -163,11 +197,22 @@ const app = new Vue({
 			pdfView.previewFile({
 				content:{ promise: Promise.resolve(base64ToArrayBuffer(data)) },
 				metaData:{fileName: "result.pdf"}
+			}, 
+			{
+				embedMode:mode
 			});	
 
 		},
 		validForConversion(type) {
 			return VALID_TO_PDF.includes(type);
+		}
+	},
+	watch: {
+		embedMode(val) {
+			// only care if viewing a pdf via third box
+			if(!this.pdfFileEmbed) return;
+			console.log('embedMode is now', val);
+			this.pdfRender(this.pdfFileEmbedBase64, val);
 		}
 	}
 });
