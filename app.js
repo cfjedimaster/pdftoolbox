@@ -24,7 +24,11 @@ const app = new Vue({
 	el:'#app', 
 	data: {
 		convertToPDFStatus:'',
-		pdfAPIReady: false
+		exportPDFStatus:'',
+		pdfAPIReady: false,
+		exportReady:false,
+		pdfFile:null,
+		exportFormat:'DOCX' /* hard coded for now just to lazily set a default */
 	},
 	mounted() {
 		/*
@@ -66,6 +70,88 @@ const app = new Vue({
 			// render to the PDF Embed
 			this.pdfRender(data.result);
 
+
+		},
+		async dropPDF(e) {
+			let droppedFiles = e.dataTransfer.files;
+      		if(!droppedFiles) return;
+
+			this.exportPDFStatus = '';
+			this.exportReady = false;
+
+			// only care about file1
+			let file = droppedFiles[0];
+			if(file.type !== 'application/pdf') {
+				this.exportPDFStatus = 'Dropped file was not a PDF.';
+				return;
+			}
+
+			// copy so we can use it when the process begins
+			this.pdfFile = file;
+			this.exportReady = true;
+
+		},
+		async exportPDF() {
+
+			this.exportPDFStatus = `Beginning conversion of ${this.pdfFile.name} to ${this.exportFormat}...`;
+			let fileData = await getFile(this.pdfFile);
+			let body = {
+				format:this.exportFormat,
+				data:fileData
+			};
+
+			
+			let resp = await fetch('https://en8qkrlmh26s241.m.pipedream.net?pipedream_upload_body=1', {
+				method:'POST', 
+				body: JSON.stringify(body)
+			});
+			let data = await resp.json();
+			
+			/*
+			To Do:
+			data.result is base64 for result.${this.exportFOrmat}. 
+			We need to convert to binary and force a download.
+
+			Credit solution: https://stackoverflow.com/a/16245768/52160
+			*/
+			const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+				const byteCharacters = atob(b64Data);
+				const byteArrays = [];
+
+				for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+					const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+					const byteNumbers = new Array(slice.length);
+					for (let i = 0; i < slice.length; i++) {
+					byteNumbers[i] = slice.charCodeAt(i);
+					}
+
+					const byteArray = new Uint8Array(byteNumbers);
+					byteArrays.push(byteArray);
+				}
+
+				const blob = new Blob(byteArrays, {type: contentType});
+				return blob;
+			}
+
+			this.exportPDFStatus = 'File converted. Downloading the result now. Please check your downloads folder.';
+
+			let contentType = '';
+			if(this.exportFormat === 'DOC' || this.exportFormat === 'DOCX') contentType = 'application/msword';
+			/*
+			if(this.exportFormat === 'JPEG' ) contentType = 'image/jpeg';
+			if(this.exportFormat === 'PNG' ) contentType = 'image/png';
+			*/
+			// Images get stored to a zip
+			if(this.exportFormat === 'JPEG' || this.exportFormat === 'PNG') contentType = 'application/zip';
+			if(this.exportFormat === 'PPTX' ) contentType = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+			if(this.exportFormat === 'RTF' ) contentType = 'text/rtf';
+			if(this.exportFormat === 'XLSX' ) contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+			const blob = b64toBlob(data.result, contentType);
+			const blobUrl = URL.createObjectURL(blob);
+
+			window.location = blobUrl;
 
 		},
 		pdfRender(data) {

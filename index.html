@@ -9,7 +9,7 @@
 
 	<div id="features">
 
-		<h2>PDF Toolbox</h2>
+		<h2>PDF Toolbox v1.Infinity</h2>
 
 		<div class="featureBox" @drop.prevent="dropDoc" @dragenter.prevent @dragover.prevent>
 		<p>
@@ -18,11 +18,24 @@
 		<p v-html="convertToPDFStatus"></p>
 		</div>
 
-		<div class="featureBox">
+		<div class="featureBox" @drop.prevent="dropPDF" @dragenter.prevent @dragover.prevent>
 		<p>
-		This box lets you select a pdf, select a format from a drop down, hit the button to send it and then it will stream 
-		to a download. NOT IMPLEMENTED.
+		Drag a PDF here, select a format from a drop down, hit the button to send it and then it will stream 
+		to a download. (Note that JPEG/PNG output as a zip file.)
 		</p>
+		<p>
+		<select v-model="exportFormat">
+			<option>DOC</option>
+			<option>DOCX</option>
+			<option>JPEG</option>
+			<option>PNG</option>
+			<option>PPTX</option>
+			<option>RTF</option>
+			<option>XLSX</option>
+		</select>
+		<button @click="exportPDF" :disabled="!exportReady">Export</button>
+		</p>
+		<p v-html="exportPDFStatus"></p>
 		</div>
 
 	</div>
