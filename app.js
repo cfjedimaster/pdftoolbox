@@ -2,7 +2,10 @@
 dragdrop help: https://stackoverflow.com/a/63066729/52160
 */
 
-const ADOBE_KEY = '9861538238544ff39d37c6841344b78d';
+// localhost
+let ADOBE_KEY = '9861538238544ff39d37c6841344b78d';
+// not localhost
+if(window.location.host === 'mypdftoolbox.netlify.app') ADOBE_KEY = 'b7262c67827b4378a381d33011b8a704';
 
 const VALID_TO_PDF = [
 	'image/jpeg',
