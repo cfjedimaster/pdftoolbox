@@ -5,34 +5,34 @@
 
 <body>
 
-
 <div id="app">
 
-<h2>PDF Toolbox</h2>
-
 	<div id="features">
+
+		<h2>PDF Toolbox</h2>
+
 		<div class="featureBox" @drop.prevent="dropDoc" @dragenter.prevent @dragover.prevent>
 		<p>
 		Drag an Office doc (DOC, DOCX, PPT, PPTX, XLS, XLSX), TXT, RTF, or Image (BMP, JPEG, GIF, TIFF, PNG) to convert to PDF.
 		</p>
-		<p>{{ convertToPDFStatus }}</p>
+		<p v-html="convertToPDFStatus"></p>
 		</div>
 
 		<div class="featureBox">
 		<p>
-		this box lets you select a pdf, select a format from a drop down, hit the button to send it and then it will stream 
-		to a download 
+		This box lets you select a pdf, select a format from a drop down, hit the button to send it and then it will stream 
+		to a download. NOT IMPLEMENTED.
 		</p>
 		</div>
 
 	</div>
 
 	<div id="pdfEmbed">
-	embed will go here
 	</div>
 
 </div>
 
+<script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="app.js"></script>
 </body>

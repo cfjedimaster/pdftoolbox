@@ -1,3 +1,8 @@
+/*
+Hey, guess what, again, I forgot that Netlify limits you to 10 seconds, so I punted this to Pipedream. Again.
+Sorry.
+*/
+/*
 const { Readable } = require('stream');
 const pdfSDK = require('@adobe/pdfservices-node-sdk');
 const fs = require('fs');
@@ -35,15 +40,15 @@ const handler = async (event) => {
     let output = `./${nanoid()}.pdf`;
 	await pdf.saveAsFile(output);
 
-	let pdfData = fs.readFileSync(output, 'binary');
-	let pdf64 = Buffer.from(pdfData).toString('base64');
+	let pdfData = fs.readFileSync(output, 'binary').toString('base64');
 
     return {
       statusCode: 200,
-      body: pdf64,
+      body: pdfData
+	  
       // // more keys you can return:
       // headers: { "headerName": "headerValue", ... },
-      isBase64Encoded: true,
+      //isBase64Encoded: true,
     }
   } catch (error) {
     return { statusCode: 500, body: error.toString() }
@@ -86,3 +91,4 @@ async function createPDF(source, creds) {
 }
 
 module.exports = { handler }
+*/
