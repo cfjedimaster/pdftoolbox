@@ -31,3 +31,8 @@ a {
 	margin-top: 10px;
 }
 
+footer {
+  position: sticky;
+  top: 100vh;
+  padding-bottom: 10px;
+}
