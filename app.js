@@ -74,8 +74,9 @@ const app = new Vue({
 				method:'POST', 
 				body: JSON.stringify(body)
 			});
+			let data;
 			try {
-				let data = await resp.json();
+				data = await resp.json();
 			} catch(e) {
 				//right now, a generic alert
 				alert("Sorry, an error was thrown. Check your console for more information.");
@@ -154,8 +155,9 @@ const app = new Vue({
 				method:'POST', 
 				body: JSON.stringify(body)
 			});
+			let data;
 			try {
-				let data = await resp.json();
+				data = await resp.json();
 			} catch(e) {
 				//right now, a generic alert
 				alert("Sorry, an error was thrown. Check your console for more information.");
