@@ -20,6 +20,14 @@ Third, an account with [Pipedream](https://pipedream.com/). Pipedream is a free,
 * ConverToPDF: https://pipedream.com/@raymondcamden/converttopdf-p_MOC8L7b
 * ExportPDF: https://pipedream.com/@raymondcamden/exportpdf-p_gYCr5aw
 
+When you fork the above repos, you will need to create environment variables for the following values from your Adobe credentials:
+
+* ADOBE_CLIENT_ID,
+* ADOBE_CLIENT_SECRET
+* ADOBE_KEY
+* ADOBE_ORGANIZATION_ID
+* ADOBE_ACCOUNT_ID
+
 Once you've signed up for PDF Services and Embed and then Pipedream, you need to configure keys. There's two parts to this.
 
 First, edit constants.json:
