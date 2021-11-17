@@ -2,10 +2,6 @@
 dragdrop help: https://stackoverflow.com/a/63066729/52160
 */
 
-// localhost
-let ADOBE_KEY = '9861538238544ff39d37c6841344b78d';
-// not localhost
-if(window.location.host === 'mypdftoolbox.netlify.app') ADOBE_KEY = 'b7262c67827b4378a381d33011b8a704';
 
 const VALID_TO_PDF = [
 	'image/jpeg',
@@ -34,14 +30,22 @@ const app = new Vue({
 		pdfFileEmbed:null,
 		pdfFileEmbedBase64:null,
 		exportFormat:'DOCX' /* hard coded for now just to lazily set a default */,
-		embedMode:'FULL_WINDOW' /* ditto above */
+		embedMode:'FULL_WINDOW' /* ditto above */,
+		embedKey:'',
+		convertToPDFAPI:'',
+		exportToPDFAPI:''
 	},
-	mounted() {
+	async mounted() {
 		/*
 		for now this is blank - I may set up logic here to know when AdobeDC is ready, but in theory it 
 		wont matter as a user has to do a few steps before we even bother showing anything, so no (real) way to 'beat'
 		it not being ready.
 		*/
+		let consts = await (await fetch('./constants.json')).json();
+		if(window.location.host === consts.prod_host) this.embedKey = consts.prod_key;
+		else this.embedKey = consts.localhost_key;
+		this.convertToPDFAPI = consts.convertToPDFAPI;
+		this.exportToPDFAPI = consts.exportToPDFAPI;
 	},
 	methods: {
 		async dropDoc(e) {
@@ -66,11 +70,18 @@ const app = new Vue({
 				data:fileData
 			};
 
-			let resp = await fetch('https://entb5llsz2h4xuz.m.pipedream.net?pipedream_upload_body=1', {
+			let resp = await fetch(this.convertToPDFAPI, {
 				method:'POST', 
 				body: JSON.stringify(body)
 			});
-			let data = await resp.json();
+			try {
+				let data = await resp.json();
+			} catch(e) {
+				//right now, a generic alert
+				alert("Sorry, an error was thrown. Check your console for more information.");
+				return;
+			}
+	
 			this.convertToPDFStatus = 'File converted. Previewing below.';
 
 			// render to the PDF Embed
@@ -139,11 +150,17 @@ const app = new Vue({
 			};
 
 			
-			let resp = await fetch('https://en8qkrlmh26s241.m.pipedream.net?pipedream_upload_body=1', {
+			let resp = await fetch(this.exportToPDFAPI, {
 				method:'POST', 
 				body: JSON.stringify(body)
 			});
-			let data = await resp.json();
+			try {
+				let data = await resp.json();
+			} catch(e) {
+				//right now, a generic alert
+				alert("Sorry, an error was thrown. Check your console for more information.");
+				return;
+			}
 			
 			/*
 			To Do:
@@ -194,7 +211,7 @@ const app = new Vue({
 		},
 		pdfRender(data,mode = 'FULL_WINDOW') {
 			let pdfView = new AdobeDC.View({
-				clientId: ADOBE_KEY, divId: "pdfEmbed" 
+				clientId: this.embedKey, divId: "pdfEmbed" 
 			});
 
 			pdfView.previewFile({
