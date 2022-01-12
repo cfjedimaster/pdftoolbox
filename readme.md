@@ -4,6 +4,7 @@ The PDF Toolbox is meant to be a simple web-based tool to let you test [Adobe PD
 
 * Convert supported documents to PDF: Simply drag your input into the appropriate box, the API will convert it to the PDF, and it will then be rendered in a PDF Embed.
 * Convert PDF to supported formats: Drag a PDF into the box, select a format, and then hit the "Export" button. The API will perform the export, return the result, and your browser will automatically download the result.
+* Get properties of the PDF.
 * Embed a PDF: As it says, just drag a PDF to view it in the Embed API. You can also change the embed mode. This is *not* as nice as the [Adobe PDF Embed API Demo](https://documentcloud.adobe.com/view-sdk-demo/index.html#/view/FULL_WINDOW/Bodea%20Brochure.pdf), but I've included it here for completeness.
 
 
@@ -19,6 +20,7 @@ Third, an account with [Pipedream](https://pipedream.com/). Pipedream is a free,
 
 * ConverToPDF: https://pipedream.com/@raymondcamden/converttopdf-p_MOC8L7b
 * ExportPDF: https://pipedream.com/@raymondcamden/exportpdf-p_gYCr5aw
+* GetPDFProperties: https://pipedream.com/@raymondcamden/getpdfproperties-p_V9CnJPM
 
 When you fork the above repos, you will need to create environment variables for the following values from your Adobe credentials:
 
@@ -38,7 +40,8 @@ First, edit constants.json:
 	"prod_host":"mypdftoolbox.netlify.app",
 	"prod_key":"b7262c67827b4378a381d33011b8a704",
 	"convertToPDFAPI":"https://entb5llsz2h4xuz.m.pipedream.net?pipedream_upload_body=1",
-	"exportToPDFAPI":"https://en8qkrlmh26s241.m.pipedream.net?pipedream_upload_body=1"
+	"exportToPDFAPI":"https://en8qkrlmh26s241.m.pipedream.net?pipedream_upload_body=1",
+	"getPDFPropertiesAPI":"https://enpnb5h3yitvfxv.m.pipedream.net?pipedream_upload_body=1"
 }
 ```
 
