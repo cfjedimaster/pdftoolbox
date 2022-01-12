@@ -33,7 +33,10 @@ const app = new Vue({
 		embedMode:'FULL_WINDOW' /* ditto above */,
 		embedKey:'',
 		convertToPDFAPI:'',
-		exportToPDFAPI:''
+		exportToPDFAPI:'',
+		getPDFPropertiesStatus:'',
+		pdfProperties:null
+
 	},
 	async mounted() {
 		/*
@@ -46,11 +49,12 @@ const app = new Vue({
 		else this.embedKey = consts.localhost_key;
 		this.convertToPDFAPI = consts.convertToPDFAPI;
 		this.exportToPDFAPI = consts.exportToPDFAPI;
+		this.getPDFPropertiesAPI = consts.getPDFPropertiesAPI;
 	},
 	methods: {
 		async dropDoc(e) {
 			let droppedFiles = e.dataTransfer.files;
-      		if(!droppedFiles) return;
+			if(!droppedFiles) return;
 
 			this.convertToPDFStatus = '';
 
@@ -104,11 +108,50 @@ const app = new Vue({
 				return;
 			}
 
-			// copy so we can use it when the process begins
-			this.pdfFile = file;
-			this.exportReady = true;
+
 
 		},
+		async dropProps(e) {
+			let droppedFiles = e.dataTransfer.files;
+      		if(!droppedFiles) return;
+
+			this.getPDFPropertiesStatus = '';
+			this.pdfProperties = '';
+
+			// only care about file1
+			let file = droppedFiles[0];
+			if(file.type !== 'application/pdf') {
+				this.exportPDFStatus = 'Dropped file was not a PDF.';
+				return;
+			}
+
+
+			this.getPDFPropertiesStatus = `Getting PDF properties for ${file.name}...`;
+			let fileData = await getFile(file);
+			let body = {
+				type:file.type,
+				name:file.name,
+				data:fileData
+			};
+
+			let resp = await fetch(this.getPDFPropertiesAPI, {
+				method:'POST', 
+				body: JSON.stringify(body)
+			});
+			let data;
+			try {
+				data = await resp.json();
+				this.pdfProperties = '<h2>PDF Properties Result</h2><pre id="pdfProperties">' + JSON.stringify(data.result,null,'\t') + '</pre>';
+//				this.pdfProperties = JSON.stringify(data.result,null,'\t');
+				this.getPDFPropertiesStatus = '';
+			} catch(e) {
+				//right now, a generic alert
+				alert("Sorry, an error was thrown. Check your console for more information.");
+				return;
+			}
+	
+
+		},		
 		async dropPDFForEmbed(e) {
 			let droppedFiles = e.dataTransfer.files;
       		if(!droppedFiles) return;

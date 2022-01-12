@@ -39,6 +39,13 @@
 		<p v-html="exportPDFStatus"></p>
 		</div>
 
+		<div class="featureBox" @drop.prevent="dropProps" @dragenter.prevent @dragover.prevent>
+		<p>
+		Drop a PDF here and I'll render the call to get properties.
+		</p>
+		<p v-html="getPDFPropertiesStatus"></p>
+		</div>
+
 		<div class="featureBox" @drop.prevent="dropPDFForEmbed" @dragenter.prevent @dragover.prevent>
 		<p>
 		Drag a PDF here to simply view it in our awesome PDF Embed API.
@@ -61,9 +68,8 @@
 
 	</div>
 
-	<div id="pdfEmbed">
-	</div>
-
+	<div id="pdfEmbed" v-html="pdfProperties"></div>
+	
 </div>
 
 <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
